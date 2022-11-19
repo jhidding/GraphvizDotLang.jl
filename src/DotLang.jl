@@ -1,21 +1,3 @@
-"""
-Graphviz works with a special language for describing graphs called DOT.
-The [documentation of Graphviz](https://graphviz.org/doc/info/lang.html)
-describes the syntax for this language. This module helps generating
-expressions in the DOT language programmatically.
-
-This module defines a set of structs that match the different elements in
-the DOT language. The `print(::IO, ::T)` method is used to provide
-writers for each of these structs.
-
-Graphviz supports many attributes. This module does not check for validity
-of the attributes you give it.
-
-The syntax of Graphviz is very liberal. It will accept a lot of varieties of
-input. This module will encapsulate all IDs in double quotation marks.
-
-Example:
-"""
 module DotLang
 
 @enum GraphComponent c_graph c_node c_edge
@@ -41,16 +23,31 @@ abstract type Statement end
 
 struct Subgraph <: Statement
     name :: Union{String, Nothing}
-    stmt_lst :: Vector{Statement}
+    is_directed :: Bool
+    stmt_list :: Vector{Statement}
 end
 
-struct AList
-    content :: IdDict{Symbol,String}
+"""
+    HTML(html::String)
+
+Any HTMLish label should be wrapped into a HTML struct, so that we know
+to change the quotation marks from double quotes to angled brackets.
+"""
+struct HTML
+    html :: String
 end
+
+AListDict = IdDict{Symbol, Union{String,HTML}}
+struct AList
+    content :: IdDict{Symbol,Union{String,HTML}}
+end
+
+AList(x::IdDict{Symbol,String}) = AList(convert(IdDict{Symbol, Union{String,HTML}}, x))
 
 function Base.show(io :: IO, alst :: AList)
     for (k, v) in pairs(alst.content)
-        print(io, k, "=\"", v, "\";")
+        value_repr = v isa HTML ? "<$(v.html)>" : "\"$v\""
+        print(io, "$k=$value_repr;")
     end
 end
 
@@ -123,12 +120,10 @@ function Base.show(io :: IO, i :: IdentityStmt)
 end
 
 function Base.show(io :: IO, s :: Subgraph)
-    print(io, "subgraph ")
-    if !isnothing(s.name)
-        print(io, s.name, " ")
-    end
-    print(io, "{\n")
-    for s in s.stmt_lst
+    print(io, "subgraph ",
+              !isnothing(s.name) ? "\"$(s.name)\" " : "",
+              "{\n")
+    for s in s.stmt_list
         print(io, "  ", s, ";\n")
     end
     print(io, "}\n")
@@ -144,7 +139,7 @@ end
 function Base.show(io :: IO, g :: Graph)
     print(io, g.is_strict ? "strict " : "",
               g.is_directed ? "digraph " : "graph ",
-              !isnothing(g.name) ? "\"$(g.name)\"" * " " : "",
+              !isnothing(g.name) ? "\"$(g.name)\" " : "",
               "{\n")
     for s in g.stmt_list
         print(io, "  ", s, ";\n")
@@ -188,7 +183,10 @@ function digraph(name = nothing; kwargs ...)
     Graph(false, true , name, []) |> attr(c_graph; kwargs ...)
 end
 
-"""Make a `Graph` object strict.
+"""
+    strict
+
+Make a `Graph` object strict.
 
 ```jldoctest
 julia> graph() |> strict
@@ -199,6 +197,8 @@ strict graph {
 strict(g :: Graph) = begin g.is_strict = true; g end
 
 """
+    node(id::String, port::Union{String,Nothing}=nothing; kwargs...)
+
 Add node to a graph.
 
 ```jldoctest
@@ -213,6 +213,8 @@ function node(id::String, port::Union{String, Nothing} = nothing; kwargs ...)
 end
 
 """
+    edge(from::String, to::String ...; kwargs ...)
+
 Add an edge to a graph.
 
 ```jldoctest
@@ -230,16 +232,18 @@ function edge(from::String, to::String ...; kwargs ...)
     edge(NodeId(from, nothing), NodeOrSubgraph[NodeId(n, nothing) for n in to]; kwargs ...)
 end
 
+function attr(comp::GraphComponent; attrs ...)
+    isempty(attrs) && return (g -> g)
+    g -> begin push!(g.stmt_list, AttrStmt(comp,[AList(attrs)])); g end
+end
+
 function edge(from::NodeOrSubgraph, to::Vector{NodeOrSubgraph}; kwargs ...)
     g -> begin push!(g.stmt_list, EdgeStmt(g.is_directed, from, to, [AList(kwargs)])); g end
 end
 
-function attr(comp::GraphComponent; attrs ...)
-    isempty(attrs) && return (g -> g)
-    g -> begin push!(g.stmt_list, AttrStmt(comp,[AList(IdDict(attrs))])); g end
-end
-
 """
+    attr(symb::Symbol; attrs...)
+
 Add attributes to the graph. The `symb` argument must be one of
 `[:graph, :node, :edge]`.
 """
@@ -248,11 +252,20 @@ function attr(symb::Symbol; attrs ...)
     attr(c; attrs...)
 end
 
-function subgraph(name=nothing; kwargs...)
-    Subgraph(name, []) |> attr(c_graph; kwargs...)
+"""
+    subgraph(parent::Union{Graph,Subgraph}, name=nothing; kwargs...)
+
+Create new subgraph. Returns the subgraph.
+"""
+function subgraph(g::Union{Graph,Subgraph}, name=nothing; kwargs...)
+    s =  Subgraph(name, g.is_directed, []) |> attr(c_graph; kwargs...)
+    push!(g.stmt_list, s)
+    s
 end
 
 """
+    save(g::Graph, filename::String; engine="dot", format="svg")
+
 Run the `dot` command to save the graph to file.
 """
 function save(g::Graph, filename::String; engine="dot", format="svg")

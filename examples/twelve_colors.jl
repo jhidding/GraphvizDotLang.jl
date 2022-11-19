@@ -16,7 +16,7 @@ colors = Dict(
     "green"       => ["yellowgreen", "yellow", "white", "cyan", "springgreen"],
     "white"       => [])
 
-white_text = Set(["blue", "green", "purple", "red"])
+white_text = Set(["blue", "green", "purple", "red", "magenta", "deeppink"])
 
 g = digraph("Twelve_colors"; layout="neato", normalize="0", start="regular") |>
     attr(:node; shape="circle", style="filled", width = "1.5") |>
