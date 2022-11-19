@@ -1,5 +1,5 @@
 # DotLang.jl
-Create Graphviz graphs straight from Julia.
+Create Graphviz graphs straight from Julia. There is a `Graphviz.jl` package that offers interop between Julia and the Graphviz C library. However, it seems that this package does not give us a nice interface to generate `DOT` language.
 
 ```@contents
 Depth = 3
@@ -11,7 +11,7 @@ This module defines a set of structs that match the different elements in the DO
 
 Graphviz supports many attributes. This module does not check for validity of the attributes you give it.
 
-The syntax of Graphviz is very liberal. It will accept a lot of varieties of input. This module will encapsulate all IDs in double quotation marks.
+The syntax of Graphviz is very liberal. It will accept a lot of varieties of input. This module encapsulates all IDs in double quotation marks.
 
 
 ## Examples
