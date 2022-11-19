@@ -1,0 +1,4 @@
+name = "DotLang"
+uuid = "6039e64d-d8b8-4c93-8e43-7efd2f757352"
+authors = ["Johan Hidding <j.hidding@esciencecenter.nl>"]
+version = "0.1.0"
