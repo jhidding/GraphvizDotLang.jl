@@ -1,8 +1,8 @@
 push!(LOAD_PATH,"../src/")
 
-using Documenter, DotLang
+using Documenter, GraphvizDotLang
 
-makedocs(sitename="DotLang documentation")
+makedocs(sitename="GraphvizDotLang documentation")
 deploydocs(
-    repo = "github.com/jhidding/DotLang.jl.git",
+    repo = "github.com/jhidding/GraphvizDotLang.jl.git",
 )

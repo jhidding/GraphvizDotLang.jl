@@ -1,4 +1,4 @@
-module DotLang
+module GraphvizDotLang
 
 @enum GraphComponent c_graph c_node c_edge
 

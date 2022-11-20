@@ -1,4 +1,4 @@
-using DotLang: digraph, edge, node, attr, HTML, save
+using GraphvizDotLang: digraph, edge, node, attr, HTML, save
 using Printf: @sprintf
 
 a_freq = 440.0

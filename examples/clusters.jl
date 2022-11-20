@@ -1,4 +1,4 @@
-using DotLang: digraph, edge, node, save, attr, subgraph
+using GraphvizDotLang: digraph, edge, node, save, attr, subgraph
 
 g = digraph("G")
 cluster0 = subgraph(g, "cluster_0"; label="process #1", style="filled", color="lightgray") |>

@@ -1,5 +1,5 @@
 # After an example by Costa Shulyupin
-using DotLang: digraph, edge, node, save, attr
+using GraphvizDotLang: digraph, edge, node, save, attr
 
 colors = Dict(
     "orange"      => [],

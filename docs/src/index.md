@@ -1,4 +1,4 @@
-# DotLang.jl
+# GraphvizDotLang.jl
 Create Graphviz graphs straight from Julia. There is a `Graphviz.jl` package that offers interop between Julia and the Graphviz C library. However, it seems that this package does not give us a nice interface to generate `DOT` language.
 
 ```@contents
@@ -17,7 +17,7 @@ The syntax of Graphviz is very liberal. It will accept a lot of varieties of inp
 ## Examples
 ### Clusters
 ```@example
-using DotLang: digraph, edge, node, save, attr, subgraph
+using GraphvizDotLang: digraph, edge, node, save, attr, subgraph
 
 g = digraph("G")
 cluster0 = subgraph(g, "cluster_0"; label="process #1", style="filled", color="lightgray") |>
@@ -43,7 +43,7 @@ save(g, "clusters.svg")
 
 ### Circle of Fifths
 ```@example
-using DotLang: digraph, edge, node, attr, HTML, save
+using GraphvizDotLang: digraph, edge, node, attr, HTML, save
 using Printf: @sprintf
 
 a_freq = 440.0
@@ -74,7 +74,7 @@ save(g, "circle_of_fifths.svg")
 ### Twelve colors
 ```@example
 # After an example by Costa Shulyupin
-using DotLang: digraph, edge, node, save, attr
+using GraphvizDotLang: digraph, edge, node, save, attr
 
 colors = Dict(
     "orange"      => [],
@@ -109,7 +109,7 @@ save(g, "twelve_colors.svg"; engine="neato")
 
 ## API
 ```@meta
-CurrentModule = DotLang
+CurrentModule = GraphvizDotLang
 ```
 
 ```@docs
