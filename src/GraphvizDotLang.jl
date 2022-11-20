@@ -56,6 +56,15 @@ struct NodeId
     port :: Union{String,Nothing}
 end
 
+function NodeId(expr::String)
+    components = split(expr, ":")
+    name = components[1]
+    port = length(components) > 1 ?
+        join(":" * c for c in  components[2:end]) :
+        nothing
+    NodeId(name, port)
+end
+
 struct NodeStmt <: Statement
     id :: NodeId
     attr_list :: Vector{AList}
@@ -229,7 +238,7 @@ digraph {
 ```
 """
 function edge(from::String, to::String ...; kwargs ...)
-    edge(NodeId(from, nothing), NodeOrSubgraph[NodeId(n, nothing) for n in to]; kwargs ...)
+    edge(NodeId(from), NodeOrSubgraph[NodeId(n) for n in to]; kwargs ...)
 end
 
 function attr(comp::GraphComponent; attrs ...)

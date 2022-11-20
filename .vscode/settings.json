@@ -1,3 +1,4 @@
 {
-    "julia.environmentPath": "/mnt/data/Zijpaadjes/machine-learning/DotLang.jl"
+    "julia.environmentPath": "/mnt/data/Zijpaadjes/machine-learning/DotLang.jl",
+    "svg.preview.background": "transparent"
 }

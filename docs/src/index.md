@@ -15,7 +15,32 @@ The syntax of Graphviz is very liberal. It will accept a lot of varieties of inp
 
 
 ## Examples
+### Bridges of Königsberg
+
+```@example
+using GraphvizDotLang: graph, edge, node, save, attr
+
+g = graph(;layout="neato") |>
+    attr(:node; shape="tripleoctagon", style="rounded,filled",
+                fillcolor="darkolivegreen4",
+                fontcolor="white") |>
+    attr(:edge; len="1.4", penwidth="3") |>
+    node("North"; label="Altstadt", pos="0,1", width="2", height="0.7") |>
+    node("South"; label="Vorstadt", pos="0,-1", width="2", height="0.7") |>
+    node("Center"; label="Kneiphof", pos="1,0") |>
+    node("East"; label="Lomse", pos="2,0", height="1") |>
+    edge("East", "South", "Center", "North") |>
+    edge("East", "North", "Center", "South") |>
+    edge("Center", "East")
+save(g, "konigsberg.svg")
+```
+
+![](konigsberg.svg)
+
 ### Clusters
+
+- How to use `subgraph`
+
 ```@example
 using GraphvizDotLang: digraph, edge, node, save, attr, subgraph
 
@@ -42,6 +67,9 @@ save(g, "clusters.svg")
 ![](clusters.svg)
 
 ### Circle of Fifths
+
+- Shows `record` nodes with `HTML` labels
+
 ```@example
 using GraphvizDotLang: digraph, edge, node, attr, HTML, save
 using Printf: @sprintf
@@ -72,6 +100,10 @@ save(g, "circle_of_fifths.svg")
 ![](circle_of_fifths.svg)
 
 ### Twelve colors
+
+- using node fill colors
+- using `neato` layout
+
 ```@example
 # After an example by Costa Shulyupin
 using GraphvizDotLang: digraph, edge, node, save, attr
@@ -96,7 +128,7 @@ white_text = Set(["blue", "green", "purple", "red", "magenta", "deeppink"])
 g = digraph("Twelve_colors"; layout="neato", normalize="0", start="regular") |>
     attr(:node; shape="circle", style="filled", width = "1.5") |>
     attr(:edge; len="2")
-    for (c, others) in colors
+for (c, others) in colors
     g |> node(c; fillcolor=c, fontcolor=c ∈ white_text ? "white" : "black")
     for o in others
         g |> edge(c, o)
@@ -119,4 +151,5 @@ subgraph
 node
 edge
 attr
+HTML
 ```
