@@ -27,6 +27,7 @@ save(g, ARGS[1])
 
 - Please check the [documentation pages](https://jhidding.github.io/GraphvizDotLang.jl).
 - You will also need the extensive [documentation of Graphviz](https://graphviz.org/documentation/) itself.
+- Run `make all` to build the documentation locally and also run the examples.
 
 ## License
 Copyright 2022 Netherlands eScience Center, Johan Hidding. Licensed under Apache v2, see LICENSE
