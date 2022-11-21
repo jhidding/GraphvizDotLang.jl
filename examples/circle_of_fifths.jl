@@ -21,4 +21,4 @@ for (i, n) in enumerate(note_names)
         node(n; label=HTML(@sprintf "<b>%s</b> | %4.1fHz" n et_freq)) |>
         edge(n, note_names[(i + 6) % 12 + 1])
 end
-save(g, "circle_of_fifths.svg")
+save(g, ARGS[1])

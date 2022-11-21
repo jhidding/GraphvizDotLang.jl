@@ -17,4 +17,5 @@ g |>
     edge("b3", "end") |>
     node("start"; shape="Mdiamond") |>
     node("end"; shape="Msquare")
-save(g, "clusters.svg")
+
+save(g, ARGS[1])

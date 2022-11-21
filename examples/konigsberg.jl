@@ -12,4 +12,5 @@ g = graph(;layout="neato") |>
     edge("East", "South", "Center", "North") |>
     edge("East", "North", "Center", "South") |>
     edge("Center", "East")
-save(g, "konigsberg.svg")
+
+save(g, ARGS[1])

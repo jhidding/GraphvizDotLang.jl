@@ -27,4 +27,4 @@ g = digraph("Twelve_colors"; layout="neato", normalize="0", start="regular") |>
         g |> edge(c, o)
     end
 end
-save(g, "twelve_colors.svg"; engine="neato")
+save(g, ARGS[1])
