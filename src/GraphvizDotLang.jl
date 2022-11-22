@@ -1,5 +1,7 @@
 module GraphvizDotLang
 
+using Base.Filesystem: dirname, mkpath
+
 @enum GraphComponent c_graph c_node c_edge
 
 const component_name = IdDict(
@@ -275,9 +277,11 @@ end
 """
     save(g::Graph, filename::String; engine="dot", format="svg")
 
-Run the `dot` command to save the graph to file.
+Run the `dot` command to save the graph to file. Creates the containing directory
+if it doesn't already exist.
 """
 function save(g::Graph, filename::String; engine="dot", format="svg")
+    mkpath(dirname(filename))
     open(pipeline(`dot -T$(format) -K$(engine)`, filename), "w", stdout) do io
         print(io, g)
     end

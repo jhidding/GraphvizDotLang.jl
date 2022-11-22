@@ -1,11 +1,16 @@
 # GraphvizDotLang.jl
+
+```@meta
+CurrentModule = GraphvizDotLang
+```
+
 Create Graphviz graphs straight from Julia. There is a `Graphviz.jl` package that offers interop between Julia and the Graphviz C library. However, it seems that this package does not give us a nice interface to generate `DOT` language.
 
 ```@contents
 Depth = 3
 ```
 
-Graphviz works with a special language for describing graphs called DOT. The [documentation of Graphviz](https://graphviz.org/doc/info/lang.html) describes the syntax for this language. This module helps generating expressions in the DOT language programmatically.
+Graphviz works with a special language for describing graphs called DOT. The [documentation of Graphviz](https://graphviz.org/documentation/) describes the syntax for this language. This module helps generating expressions in the DOT language programmatically.
 
 This module defines a set of structs that match the different elements in the DOT language. The `print(::IO, ::T)` method is used to provide writers for each of these structs.
 
@@ -13,6 +18,49 @@ Graphviz supports many attributes. This module does not check for validity of th
 
 The syntax of Graphviz is very liberal. It will accept a lot of varieties of input. This module encapsulates all IDs in double quotation marks.
 
+## Tutorial
+Graphviz supports two main types of graphs: directed and undirected. Those can be created using either [`digraph()`](@ref) for directed graphs, or [`graph()`](@ref) for undirected ones.
+
+We then add to a graph, by using the pipe-operator (`|>`). There are several functions that follow this pattern. There is [`node()`](@ref) for creating nodes in the graph, [`edge()`](@ref) for adding edges between nodes, and [`attr()`](@ref) for adding global attributes. Let's create our first undirected graph:
+
+```@example 1
+using GraphvizDotLang: graph, digraph, node, edge, attr, save
+
+g = graph() |> edge("a", "b")
+save(g, "fig/tutorial1.svg"); nothing # hide
+```
+
+![](fig/tutorial1.svg)
+
+[Graph attributes](https://graphviz.org/docs/graph/) can be added, either as `|> attr(:graph; ...)` or as arguments to the [`graph()`](@ref) constructor. Let's make the graph go from left to right:
+
+```@example 1
+g = graph(rankdir="LR") |> edge("a", "b", "c")
+save(g, "fig/tutorial2.svg"); nothing # hide
+```
+
+![](fig/tutorial2.svg)
+
+You see that nodes are implicitly created when they appear in an edge statement, and that [`edge()`](@ref) accepts any number of arguments. Let's make this a directed graph, and add a bit of flair. Under the hood, the graph is collected into a data structure, which we can show as plain text in the [DOT language](https://graphviz.org/doc/info/lang.html).
+
+
+```@example 1
+g = digraph(rankdir="LR") |>
+    attr(:node; style="filled", fillcolor="#009DDD",
+                fontcolor="white", fontname="Nunito") |>
+    edge("a", "b", "c") |>
+    node("a"; shape="square") |>
+    node("b"; shape="circle") |>
+    node("c"; shape="triangle")
+```
+
+To actually save this to an image (the default is SVG), run [`save()`](@ref).
+
+```@example 1
+save(g, "fig/tutorial3.svg")
+```
+
+![](fig/tutorial3.svg)
 
 ## Examples
 ### Bridges of Königsberg
@@ -140,9 +188,6 @@ save(g, "twelve_colors.svg"; engine="neato")
 ![](twelve_colors.svg)
 
 ## API
-```@meta
-CurrentModule = GraphvizDotLang
-```
 
 ```@docs
 graph
@@ -152,4 +197,5 @@ node
 edge
 attr
 HTML
+save
 ```
