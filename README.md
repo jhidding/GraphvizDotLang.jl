@@ -20,8 +20,7 @@ save(g, ARGS[1])
 
 ## Installation
 
-- You need the Graphviz package to be installed (Debian: `apt install graphviz`, Fedora: `dnf install graphviz`, pick your poison). The `dot` command is expected to be somewhere in your `$PATH`.
-- Install the package the usual way by typing `]add GraphvizDotLang` in the REPL.
+- Install the package the usual way by typing `]add GraphvizDotLang` in the REPL. The `Graphviz_jll` binary package will ensure that you have Graphviz installed.
 
 ## Documentation
 
