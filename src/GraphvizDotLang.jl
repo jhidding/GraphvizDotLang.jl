@@ -300,6 +300,17 @@ function Base.show(io::IO, mime::MIME"image/svg", g::Graph)
 end
 
 """
+    show(io::IO, mime::MIME"text/html", g::Graph)
+
+Show the graph as an SVG.
+"""
+function Base.show(io::IO, mime::MIME"text/html", g::Graph)
+    open(pipeline(`$(Graphviz_jll.dot()) -Tsvg`, io), "w", stdout) do dot_in
+        print(dot_in, g)
+    end
+end
+
+"""
     show(io::IO, mime::MIME"image/png", g::Graph)
 
 Show the graph as an PNG.
