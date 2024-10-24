@@ -27,19 +27,13 @@ We then add to a graph, by using the pipe-operator (`|>`). There are several fun
 using GraphvizDotLang: graph, digraph, node, edge, attr, save
 
 g = graph() |> edge("a", "b")
-save(g, "fig/tutorial1.svg"); nothing # hide
 ```
-
-![](fig/tutorial1.svg)
 
 [Graph attributes](https://graphviz.org/docs/graph/) can be added, either as `|> attr(:graph; ...)` or as arguments to the [`graph()`](@ref) constructor. Let's make the graph go from left to right:
 
 ```@example 1
 g = graph(rankdir="LR") |> edge("a", "b", "c")
-save(g, "fig/tutorial2.svg"); nothing # hide
 ```
-
-![](fig/tutorial2.svg)
 
 You see that nodes are implicitly created when they appear in an edge statement, and that [`edge()`](@ref) accepts any number of arguments. Let's make this a directed graph, and add a bit of flair. Under the hood, the graph is collected into a data structure, which we can show as plain text in the [DOT language](https://graphviz.org/doc/info/lang.html).
 
@@ -60,15 +54,13 @@ To actually save this to an image (the default is SVG), run [`save()`](@ref).
 save(g, "fig/tutorial3.svg")
 ```
 
-![](fig/tutorial3.svg)
-
 ## Examples
 ### Bridges of Königsberg
 
 ```@example
-using GraphvizDotLang: graph, edge, node, save, attr
+using GraphvizDotLang: graph, edge, node, attr
 
-g = graph(;layout="neato") |>
+graph(;layout="neato") |>
     attr(:node; shape="tripleoctagon", style="rounded,filled",
                 fillcolor="darkolivegreen4",
                 fontcolor="white") |>
@@ -80,17 +72,14 @@ g = graph(;layout="neato") |>
     edge("East", "South", "Center", "North") |>
     edge("East", "North", "Center", "South") |>
     edge("Center", "East")
-save(g, "konigsberg.svg")
 ```
-
-![](konigsberg.svg)
 
 ### Clusters
 
 - How to use `subgraph`
 
 ```@example
-using GraphvizDotLang: digraph, edge, node, save, attr, subgraph
+using GraphvizDotLang: digraph, edge, node, attr, subgraph
 
 g = digraph("G")
 cluster0 = subgraph(g, "cluster_0"; label="process #1", style="filled", color="lightgray") |>
@@ -109,17 +98,14 @@ g |>
     edge("b3", "end") |>
     node("start"; shape="Mdiamond") |>
     node("end"; shape="Msquare")
-save(g, "clusters.svg")
 ```
-
-![](clusters.svg)
 
 ### Circle of Fifths
 
 - Shows `record` nodes with `HTML` labels
 
 ```@example
-using GraphvizDotLang: digraph, edge, node, attr, HTML, save
+using GraphvizDotLang: digraph, edge, node, attr, HTML
 using Printf: @sprintf
 
 a_freq = 440.0
@@ -142,10 +128,8 @@ for (i, n) in enumerate(note_names)
         node(n; label=HTML(@sprintf "<b>%s</b> | %4.1fHz" n et_freq)) |>
         edge(n, note_names[(i + 6) % 12 + 1])
 end
-save(g, "circle_of_fifths.svg")
+g
 ```
-
-![](circle_of_fifths.svg)
 
 ### Twelve colors
 
@@ -171,7 +155,7 @@ colors = Dict(
     "green"       => ["yellowgreen", "yellow", "white", "cyan", "springgreen"],
     "white"       => [])
 
-white_text = Set(["blue", "green", "purple", "red", "magenta", "deeppink"])
+white_text = Set(["blue", "purple", "red", "magenta", "deeppink"])
 
 g = digraph("Twelve_colors"; layout="neato", normalize="0", start="regular") |>
     attr(:node; shape="circle", style="filled", width = "1.5") |>
@@ -182,10 +166,8 @@ for (c, others) in colors
         g |> edge(c, o)
     end
 end
-save(g, "twelve_colors.svg"; engine="neato")
+g
 ```
-
-![](twelve_colors.svg)
 
 ## API
 

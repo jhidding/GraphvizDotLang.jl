@@ -302,7 +302,7 @@ end
 """
     show(io::IO, mime::MIME"image/png", g::Graph)
 
-Show the graph as an SVG.
+Show the graph as an PNG.
 """
 function Base.show(io::IO, mime::MIME"image/png", g::Graph)
     open(pipeline(`$(Graphviz_jll.dot()) -Tpng`, io), "w", stdout) do dot_in
