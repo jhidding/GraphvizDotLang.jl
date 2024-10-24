@@ -4,6 +4,7 @@ authors = ["Johan Hidding <j.hidding@esciencecenter.nl>"]
 version = "0.1.0"
 
 [deps]
+Graphviz_jll = "3c863552-8265-54e4-a6dc-903eb78fde85"
 
 [compat]
 julia = "1.7"

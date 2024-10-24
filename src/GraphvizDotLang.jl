@@ -1,6 +1,7 @@
 module GraphvizDotLang
 
 using Base.Filesystem: dirname, mkpath
+using Graphviz_jll
 
 @enum GraphComponent c_graph c_node c_edge
 
@@ -114,7 +115,7 @@ struct AttrStmt <: Statement
     attr_list :: Vector{AList}
 end
 
-function Base.show(io :: IO, a :: AttrStmt)
+function Base.show(io::IO, a::AttrStmt)
     print(io, component_name[a.component])
     for attr in a.attr_list
         print(io, "[", attr, "]")
@@ -126,11 +127,11 @@ struct IdentityStmt <: Statement
     second :: String
 end
 
-function Base.show(io :: IO, i :: IdentityStmt)
+function Base.show(io::IO, i::IdentityStmt)
     print(io, i.first, "=\"", i.second, "\"")
 end
 
-function Base.show(io :: IO, s :: Subgraph)
+function Base.show(io::IO, s::Subgraph)
     print(io, "subgraph ",
               !isnothing(s.name) ? "\"$(s.name)\" " : "",
               "{\n")
@@ -147,7 +148,7 @@ mutable struct Graph
     stmt_list :: Vector{Statement}
 end
 
-function Base.show(io :: IO, g :: Graph)
+function Base.show(io::IO, g::Graph)
     print(io, g.is_strict ? "strict " : "",
               g.is_directed ? "digraph " : "graph ",
               !isnothing(g.name) ? "\"$(g.name)\" " : "",
@@ -282,8 +283,30 @@ if it doesn't already exist.
 """
 function save(g::Graph, filename::String; engine="dot", format="svg")
     mkpath(dirname(filename))
-    open(pipeline(`dot -T$(format) -K$(engine)`, filename), "w", stdout) do io
+    open(pipeline(`$(Graphviz_jll.dot()) -T$(format) -K$(engine)`, filename), "w", stdout) do io
         print(io, g)
+    end
+end
+
+"""
+    show(io::IO, mime::MIME"image/svg", g::Graph)
+
+Show the graph as an SVG.
+"""
+function Base.show(io::IO, mime::MIME"image/svg", g::Graph)
+    open(pipeline(`$(Graphviz_jll.dot()) -Tsvg`, io), "w", stdout) do dot_in
+        print(dot_in, g)
+    end
+end
+
+"""
+    show(io::IO, mime::MIME"image/png", g::Graph)
+
+Show the graph as an SVG.
+"""
+function Base.show(io::IO, mime::MIME"image/png", g::Graph)
+    open(pipeline(`$(Graphviz_jll.dot()) -Tpng`, io), "w", stdout) do dot_in
+        print(dot_in, g)
     end
 end
 
