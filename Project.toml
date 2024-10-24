@@ -1,7 +1,7 @@
 name = "GraphvizDotLang"
 uuid = "6039e64d-d8b8-4c93-8e43-7efd2f757352"
 authors = ["Johan Hidding <j.hidding@esciencecenter.nl>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 Graphviz_jll = "3c863552-8265-54e4-a6dc-903eb78fde85"
