@@ -31,7 +31,7 @@ struct Subgraph <: Statement
 end
 
 """
-    HTML(html::String)
+    HTML(html::AbstractString)
 
 Any HTMLish label should be wrapped into a HTML struct, so that we know
 to change the quotation marks from double quotes to angled brackets.
@@ -47,6 +47,11 @@ end
 
 AList(x::IdDict{Symbol,String}) = AList(convert(IdDict{Symbol, Union{String,HTML}}, x))
 
+function AList(kwargs::Base.Pairs)
+    kwargs = NamedTuple((p[1]=>String(p[2]) for p in pairs(kwargs)))
+    AList(IdDict(pairs(kwargs)))
+end
+
 function Base.show(io :: IO, alst :: AList)
     for (k, v) in pairs(alst.content)
         value_repr = v isa HTML ? "<$(v.html)>" : "\"$v\""
@@ -59,7 +64,7 @@ struct NodeId
     port :: Union{String,Nothing}
 end
 
-function NodeId(expr::String)
+function NodeId(expr::AbstractString)
     components = split(expr, ":")
     name = components[1]
     port = length(components) > 1 ?
@@ -209,7 +214,7 @@ strict graph {
 strict(g :: Graph) = begin g.is_strict = true; g end
 
 """
-    node(id::String, port::Union{String,Nothing}=nothing; kwargs...)
+    node(id::AbstractString, port::Union{AbstractString,Nothing}=nothing; kwargs...)
 
 Add node to a graph.
 
@@ -220,12 +225,12 @@ graph {
 }
 ```
 """
-function node(id::String, port::Union{String, Nothing} = nothing; kwargs ...)
+function node(id::AbstractString, port::Union{AbstractString, Nothing} = nothing; kwargs ...)
     g -> begin push!(g.stmt_list, NodeStmt(NodeId(id, port), [AList(kwargs)])); g end
 end
 
 """
-    edge(from::String, to::String ...; kwargs ...)
+    edge(from::AbstractString, to::AbstractString ...; kwargs ...)
 
 Add an edge to a graph.
 
@@ -240,7 +245,7 @@ digraph {
 }
 ```
 """
-function edge(from::String, to::String ...; kwargs ...)
+function edge(from::AbstractString, to::AbstractString ...; kwargs ...)
     edge(NodeId(from), NodeOrSubgraph[NodeId(n) for n in to]; kwargs ...)
 end
 
@@ -276,12 +281,12 @@ function subgraph(g::Union{Graph,Subgraph}, name=nothing; kwargs...)
 end
 
 """
-    save(g::Graph, filename::String; engine="dot", format="svg")
+    save(g::Graph, filename::AbstractString; engine="dot", format="svg")
 
 Run the `dot` command to save the graph to file. Creates the containing directory
 if it doesn't already exist.
 """
-function save(g::Graph, filename::String; engine="dot", format="svg")
+function save(g::Graph, filename::AbstractString; engine="dot", format="svg")
     mkpath(dirname(filename))
     open(pipeline(`$(Graphviz_jll.dot()) -T$(format) -K$(engine)`, filename), "w", stdout) do io
         print(io, g)
