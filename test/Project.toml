@@ -1,0 +1,7 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+GraphvizDotLang = "6039e64d-d8b8-4c93-8e43-7efd2f757352"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[sources]
+GraphvizDotLang = {path = ".."}
