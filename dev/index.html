@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>GraphvizDotLang.jl · GraphvizDotLang documentation</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>GraphvizDotLang documentation</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>GraphvizDotLang.jl</a><ul class="internal"><li><a class="tocitem" href="#Tutorial"><span>Tutorial</span></a></li><li><a class="tocitem" href="#Examples"><span>Examples</span></a></li><li><a class="tocitem" href="#API"><span>API</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>GraphvizDotLang.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>GraphvizDotLang.jl</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/main/docs/src/index.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="GraphvizDotLang.jl"><a class="docs-heading-anchor" href="#GraphvizDotLang.jl">GraphvizDotLang.jl</a><a id="GraphvizDotLang.jl-1"></a><a class="docs-heading-anchor-permalink" href="#GraphvizDotLang.jl" title="Permalink"></a></h1><p>Create Graphviz graphs straight from Julia. There is a <code>Graphviz.jl</code> package that offers interop between Julia and the Graphviz C library. However, it seems that this package does not give us a nice interface to generate <code>DOT</code> language.</p><ul><li><a href="#GraphvizDotLang.jl">GraphvizDotLang.jl</a></li><li class="no-marker"><ul><li><a href="#Tutorial">Tutorial</a></li><li><a href="#Examples">Examples</a></li><li class="no-marker"><ul><li><a href="#Bridges-of-Königsberg">Bridges of Königsberg</a></li><li><a href="#Clusters">Clusters</a></li><li><a href="#Circle-of-Fifths">Circle of Fifths</a></li><li><a href="#Twelve-colors">Twelve colors</a></li></ul></li><li><a href="#API">API</a></li></ul></li></ul><p>Graphviz works with a special language for describing graphs called DOT. The <a href="https://graphviz.org/documentation/">documentation of Graphviz</a> describes the syntax for this language. This module helps generating expressions in the DOT language programmatically.</p><p>This module defines a set of structs that match the different elements in the DOT language. The <code>print(::IO, ::T)</code> method is used to provide writers for each of these structs.</p><p>Graphviz supports many attributes. This module does not check for validity of the attributes you give it.</p><p>The syntax of Graphviz is very liberal. It will accept a lot of varieties of input. This module encapsulates all IDs in double quotation marks.</p><h2 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h2><p>Graphviz supports two main types of graphs: directed and undirected. Those can be created using either <a href="#GraphvizDotLang.digraph"><code>digraph()</code></a> for directed graphs, or <a href="#GraphvizDotLang.graph"><code>graph()</code></a> for undirected ones.</p><p>We then add to a graph, by using the pipe-operator (<code>|&gt;</code>). There are several functions that follow this pattern. There is <a href="#GraphvizDotLang.node"><code>node()</code></a> for creating nodes in the graph, <a href="#GraphvizDotLang.edge"><code>edge()</code></a> for adding edges between nodes, and <a href="#GraphvizDotLang.attr"><code>attr()</code></a> for adding global attributes. Let&#39;s create our first undirected graph:</p><pre><code class="language-julia hljs">using GraphvizDotLang: graph, digraph, node, edge, attr, save
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="referrer" content="no-referrer"/><title>GraphvizDotLang.jl · GraphvizDotLang documentation</title><meta name="title" content="GraphvizDotLang.jl · GraphvizDotLang documentation"/><meta property="og:title" content="GraphvizDotLang.jl · GraphvizDotLang documentation"/><meta property="twitter:title" content="GraphvizDotLang.jl · GraphvizDotLang documentation"/><meta name="description" content="Documentation for GraphvizDotLang documentation."/><meta property="og:description" content="Documentation for GraphvizDotLang documentation."/><meta property="twitter:description" content="Documentation for GraphvizDotLang documentation."/><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.63.2/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="search_index.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>GraphvizDotLang documentation</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>GraphvizDotLang.jl</a><ul class="internal"><li><a class="tocitem" href="#Tutorial"><span>Tutorial</span></a></li><li><a class="tocitem" href="#Examples"><span>Examples</span></a></li><li><a class="tocitem" href="#API"><span>API</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>GraphvizDotLang.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>GraphvizDotLang.jl</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/jhidding/GraphvizDotLang.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/main/docs/src/index.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="GraphvizDotLang.jl"><a class="docs-heading-anchor" href="#GraphvizDotLang.jl">GraphvizDotLang.jl</a><a id="GraphvizDotLang.jl-1"></a><a class="docs-heading-anchor-permalink" href="#GraphvizDotLang.jl" title="Permalink"></a></h1><p>Create Graphviz graphs straight from Julia. There is a <code>Graphviz.jl</code> package that offers interop between Julia and the Graphviz C library. However, it seems that this package does not give us a nice interface to generate <code>DOT</code> language.</p><ul><li><a href="#GraphvizDotLang.jl">GraphvizDotLang.jl</a></li><li class="no-marker"><ul><li><a href="#Tutorial">Tutorial</a></li><li><a href="#Examples">Examples</a></li><li class="no-marker"><ul><li><a href="#Bridges-of-Königsberg">Bridges of Königsberg</a></li><li><a href="#Clusters">Clusters</a></li><li><a href="#Circle-of-Fifths">Circle of Fifths</a></li><li><a href="#Twelve-colors">Twelve colors</a></li></ul></li><li><a href="#API">API</a></li></ul></li></ul><p>Graphviz works with a special language for describing graphs called DOT. The <a href="https://graphviz.org/documentation/">documentation of Graphviz</a> describes the syntax for this language. This module helps generating expressions in the DOT language programmatically.</p><p>This module defines a set of structs that match the different elements in the DOT language. The <code>print(::IO, ::T)</code> method is used to provide writers for each of these structs.</p><p>Graphviz supports many attributes. This module does not check for validity of the attributes you give it.</p><p>The syntax of Graphviz is very liberal. It will accept a lot of varieties of input. This module encapsulates all IDs in double quotation marks.</p><h2 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h2><p>Graphviz supports two main types of graphs: directed and undirected. Those can be created using either <a href="#GraphvizDotLang.digraph"><code>digraph()</code></a> for directed graphs, or <a href="#GraphvizDotLang.graph"><code>graph()</code></a> for undirected ones.</p><p>We then add to a graph, by using the pipe-operator (<code>|&gt;</code>). There are several functions that follow this pattern. There is <a href="#GraphvizDotLang.node"><code>node()</code></a> for creating nodes in the graph, <a href="#GraphvizDotLang.edge"><code>edge()</code></a> for adding edges between nodes, and <a href="#GraphvizDotLang.attr"><code>attr()</code></a> for adding global attributes. Let&#39;s create our first undirected graph:</p><pre><code class="language-julia hljs">using GraphvizDotLang: graph, digraph, node, edge, attr, save
 
 g = graph() |&gt; edge(&quot;a&quot;, &quot;b&quot;)</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
+<!-- Generated by graphviz version 15.1.0 (20260618.0150)
  -->
 <!-- Pages: 1 -->
 <svg width="62pt" height="116pt"
  viewBox="0.00 0.00 62.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-112 58,-112 58,4 -4,4"/>
+<polygon fill="white" stroke="none" points="-4,4 -4,-112 58,-112 58,4 -4,4"/>
 <!-- a -->
 <g id="node1" class="node">
 <title>a</title>
 <ellipse fill="none" stroke="black" cx="27" cy="-90" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-86.3" font-family="Times,serif" font-size="14.00">a</text>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-85.33" font-family="Times,serif" font-size="14.00">a</text>
 </g>
 <!-- b -->
 <g id="node2" class="node">
 <title>b</title>
 <ellipse fill="none" stroke="black" cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.3" font-family="Times,serif" font-size="14.00">b</text>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-13.32" font-family="Times,serif" font-size="14.00">b</text>
 </g>
 <!-- a&#45;&#45;b -->
 <g id="edge1" class="edge">
@@ -33,40 +33,40 @@ g = graph() |&gt; edge(&quot;a&quot;, &quot;b&quot;)</code></pre><?xml version="
 <p><a href="https://graphviz.org/docs/graph/">Graph attributes</a> can be added, either as <code>|&gt; attr(:graph; ...)</code> or as arguments to the <a href="#GraphvizDotLang.graph"><code>graph()</code></a> constructor. Let&#39;s make the graph go from left to right:</p><pre><code class="language-julia hljs">g = graph(rankdir=&quot;LR&quot;) |&gt; edge(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
+<!-- Generated by graphviz version 15.1.0 (20260618.0150)
  -->
 <!-- Pages: 1 -->
 <svg width="242pt" height="44pt"
  viewBox="0.00 0.00 242.00 44.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 40)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-40 238,-40 238,4 -4,4"/>
+<polygon fill="white" stroke="none" points="-4,4 -4,-40 238,-40 238,4 -4,4"/>
 <!-- a -->
 <g id="node1" class="node">
 <title>a</title>
 <ellipse fill="none" stroke="black" cx="27" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="27" y="-14.3" font-family="Times,serif" font-size="14.00">a</text>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-13.32" font-family="Times,serif" font-size="14.00">a</text>
 </g>
 <!-- b -->
 <g id="node2" class="node">
 <title>b</title>
 <ellipse fill="none" stroke="black" cx="117" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="117" y="-14.3" font-family="Times,serif" font-size="14.00">b</text>
+<text xml:space="preserve" text-anchor="middle" x="117" y="-13.32" font-family="Times,serif" font-size="14.00">b</text>
 </g>
 <!-- a&#45;&#45;b -->
 <g id="edge1" class="edge">
 <title>a&#45;&#45;b</title>
-<path fill="none" stroke="black" d="M54.4,-18C65.64,-18 78.72,-18 89.92,-18"/>
+<path fill="none" stroke="black" d="M54.4,-18C65.54,-18 78.48,-18 89.62,-18"/>
 </g>
 <!-- c -->
 <g id="node3" class="node">
 <title>c</title>
 <ellipse fill="none" stroke="black" cx="207" cy="-18" rx="27" ry="18"/>
-<text text-anchor="middle" x="207" y="-14.3" font-family="Times,serif" font-size="14.00">c</text>
+<text xml:space="preserve" text-anchor="middle" x="207" y="-13.32" font-family="Times,serif" font-size="14.00">c</text>
 </g>
 <!-- b&#45;&#45;c -->
 <g id="edge2" class="edge">
 <title>b&#45;&#45;c</title>
-<path fill="none" stroke="black" d="M144.4,-18C155.64,-18 168.72,-18 179.92,-18"/>
+<path fill="none" stroke="black" d="M144.4,-18C155.54,-18 168.48,-18 179.62,-18"/>
 </g>
 </g>
 </svg>
@@ -79,42 +79,42 @@ g = graph() |&gt; edge(&quot;a&quot;, &quot;b&quot;)</code></pre><?xml version="
     node(&quot;c&quot;; shape=&quot;triangle&quot;)</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
+<!-- Generated by graphviz version 15.1.0 (20260618.0150)
  -->
 <!-- Pages: 1 -->
-<svg width="214pt" height="54pt"
- viewBox="0.00 0.00 214.39 54.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 50)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-50 210.39,-50 210.39,4 -4,4"/>
+<svg width="218pt" height="58pt"
+ viewBox="0.00 0.00 218.00 58.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 54.5)">
+<polygon fill="white" stroke="none" points="-4,4 -4,-54.5 213.94,-54.5 213.94,4 -4,4"/>
 <!-- a -->
 <g id="node1" class="node">
 <title>a</title>
-<polygon fill="#009ddd" stroke="black" points="36,-41 0,-41 0,-5 36,-5 36,-41"/>
-<text text-anchor="middle" x="18" y="-19.3" font-family="Nunito" font-size="14.00" fill="white">a</text>
+<polygon fill="#009ddd" stroke="black" points="36,-43.25 0,-43.25 0,-7.25 36,-7.25 36,-43.25"/>
+<text xml:space="preserve" text-anchor="middle" x="18" y="-20.57" font-family="Nunito" font-size="14.00" fill="white">a</text>
 </g>
 <!-- b -->
 <g id="node2" class="node">
 <title>b</title>
-<ellipse fill="#009ddd" stroke="black" cx="90" cy="-23" rx="18" ry="18"/>
-<text text-anchor="middle" x="90" y="-19.3" font-family="Nunito" font-size="14.00" fill="white">b</text>
+<ellipse fill="#009ddd" stroke="black" cx="90" cy="-25.25" rx="18" ry="18"/>
+<text xml:space="preserve" text-anchor="middle" x="90" y="-20.57" font-family="Nunito" font-size="14.00" fill="white">b</text>
 </g>
 <!-- a&#45;&gt;b -->
 <g id="edge1" class="edge">
 <title>a&#45;&gt;b</title>
-<path fill="none" stroke="black" d="M36.3,-23C44.02,-23 53.29,-23 61.89,-23"/>
-<polygon fill="black" stroke="black" points="61.9,-26.5 71.9,-23 61.9,-19.5 61.9,-26.5"/>
+<path fill="none" stroke="black" d="M36.3,-25.25C43.59,-25.25 52.27,-25.25 60.46,-25.25"/>
+<polygon fill="black" stroke="black" points="60.38,-28.75 70.38,-25.25 60.38,-21.75 60.38,-28.75"/>
 </g>
 <!-- c -->
 <g id="node3" class="node">
 <title>c</title>
-<polygon fill="#009ddd" stroke="black" points="175.2,-46 143.8,-11.5 206.59,-11.5 175.2,-46"/>
-<text text-anchor="middle" x="175.2" y="-19.3" font-family="Nunito" font-size="14.00" fill="white">c</text>
+<polygon fill="#009ddd" stroke="black" points="176.97,-50.5 144,-12.63 209.94,-12.63 176.97,-50.5"/>
+<text xml:space="preserve" text-anchor="middle" x="176.97" y="-20.57" font-family="Nunito" font-size="14.00" fill="white">c</text>
 </g>
 <!-- b&#45;&gt;c -->
 <g id="edge2" class="edge">
 <title>b&#45;&gt;c</title>
-<path fill="none" stroke="black" d="M108.24,-23C118.55,-23 131.93,-23 143.95,-23"/>
-<polygon fill="black" stroke="black" points="144.05,-26.5 154.05,-23 144.05,-19.5 144.05,-26.5"/>
+<path fill="none" stroke="black" d="M108.19,-25.25C118.23,-25.25 131.23,-25.25 143.16,-25.25"/>
+<polygon fill="black" stroke="black" points="143.06,-28.75 153.06,-25.25 143.06,-21.75 143.06,-28.75"/>
 </g>
 </g>
 </svg>
@@ -131,86 +131,7 @@ graph(;layout=&quot;neato&quot;) |&gt;
     node(&quot;East&quot;; label=&quot;Lomse&quot;, pos=&quot;2,0&quot;, height=&quot;1&quot;) |&gt;
     edge(&quot;East&quot;, &quot;South&quot;, &quot;Center&quot;, &quot;North&quot;) |&gt;
     edge(&quot;East&quot;, &quot;North&quot;, &quot;Center&quot;, &quot;South&quot;) |&gt;
-    edge(&quot;Center&quot;, &quot;East&quot;)</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
- -->
-<!-- Pages: 1 -->
-<svg width="214pt" height="256pt"
- viewBox="0.00 0.00 214.42 256.43" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 252.43)">
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-252.43 210.42,-252.43 210.42,4 -4,4"/>
-<!-- North -->
-<g id="node1" class="node">
-<title>North</title>
-<path fill="#6e8b3d" stroke="black" d="M185.09,-211.98C185.09,-211.98 185.09,-218.88 185.09,-218.88 185.09,-222.33 181.83,-226.92 178.57,-228.05 178.57,-228.05 149.43,-238.16 149.43,-238.16 146.17,-239.3 139.46,-240.43 136.01,-240.43 136.01,-240.43 90.17,-240.43 90.17,-240.43 86.72,-240.43 80,-239.3 76.74,-238.16 76.74,-238.16 47.61,-228.05 47.61,-228.05 44.35,-226.92 41.09,-222.33 41.09,-218.88 41.09,-218.88 41.09,-211.98 41.09,-211.98 41.09,-208.53 44.35,-203.94 47.61,-202.81 47.61,-202.81 76.74,-192.69 76.74,-192.69 80,-191.56 86.72,-190.43 90.17,-190.43 90.17,-190.43 136.01,-190.43 136.01,-190.43 139.46,-190.43 146.17,-191.56 149.43,-192.69 149.43,-192.69 178.57,-202.81 178.57,-202.81 181.83,-203.94 185.09,-208.53 185.09,-211.98"/>
-<path fill="none" stroke="black" d="M189.09,-211.03C189.09,-211.03 189.09,-219.83 189.09,-219.83 189.09,-224.23 184.93,-230.07 180.78,-231.52 180.78,-231.52 151.9,-241.54 151.9,-241.54 147.74,-242.99 139.19,-244.43 134.79,-244.43 134.79,-244.43 91.39,-244.43 91.39,-244.43 86.99,-244.43 78.43,-242.99 74.28,-241.54 74.28,-241.54 45.4,-231.52 45.4,-231.52 41.25,-230.07 37.09,-224.23 37.09,-219.83 37.09,-219.83 37.09,-211.03 37.09,-211.03 37.09,-206.63 41.25,-200.79 45.4,-199.34 45.4,-199.34 74.28,-189.32 74.28,-189.32 78.43,-187.87 86.99,-186.43 91.39,-186.43 91.39,-186.43 134.79,-186.43 134.79,-186.43 139.19,-186.43 147.74,-187.87 151.9,-189.32 151.9,-189.32 180.78,-199.34 180.78,-199.34 184.93,-200.79 189.09,-206.63 189.09,-211.03"/>
-<path fill="none" stroke="black" d="M193.09,-210.08C193.09,-210.08 193.09,-220.78 193.09,-220.78 193.09,-226.13 188.04,-233.23 182.98,-234.98 182.98,-234.98 154.37,-244.92 154.37,-244.92 149.31,-246.67 138.91,-248.43 133.56,-248.43 133.56,-248.43 92.61,-248.43 92.61,-248.43 87.26,-248.43 76.86,-246.67 71.81,-244.92 71.81,-244.92 43.19,-234.98 43.19,-234.98 38.14,-233.23 33.09,-226.13 33.09,-220.78 33.09,-220.78 33.09,-210.08 33.09,-210.08 33.09,-204.73 38.14,-197.63 43.19,-195.87 43.19,-195.87 71.81,-185.94 71.81,-185.94 76.86,-184.18 87.26,-182.43 92.61,-182.43 92.61,-182.43 133.56,-182.43 133.56,-182.43 138.91,-182.43 149.31,-184.18 154.37,-185.94 154.37,-185.94 182.98,-195.87 182.98,-195.87 188.04,-197.63 193.09,-204.73 193.09,-210.08"/>
-<text text-anchor="middle" x="113.09" y="-211.73" font-family="Times,serif" font-size="14.00" fill="white">Altstadt</text>
-</g>
-<!-- Center -->
-<g id="node3" class="node">
-<title>Center</title>
-<path fill="#6e8b3d" stroke="black" d="M120.37,-121.73C120.37,-121.73 120.37,-126.7 120.37,-126.7 120.37,-129.19 118,-132.43 115.63,-133.19 115.63,-133.19 92.24,-140.7 92.24,-140.7 89.88,-141.46 85.03,-142.21 82.54,-142.21 82.54,-142.21 46.02,-142.21 46.02,-142.21 43.53,-142.21 38.68,-141.46 36.31,-140.7 36.31,-140.7 12.93,-133.19 12.93,-133.19 10.56,-132.43 8.19,-129.19 8.19,-126.7 8.19,-126.7 8.19,-121.73 8.19,-121.73 8.19,-119.24 10.56,-116 12.93,-115.24 12.93,-115.24 36.31,-107.73 36.31,-107.73 38.68,-106.97 43.53,-106.21 46.02,-106.21 46.02,-106.21 82.54,-106.21 82.54,-106.21 85.03,-106.21 89.88,-106.97 92.24,-107.73 92.24,-107.73 115.63,-115.24 115.63,-115.24 118,-116 120.37,-119.24 120.37,-121.73"/>
-<path fill="none" stroke="black" d="M124.35,-120.76C124.35,-120.76 124.35,-127.67 124.35,-127.67 124.35,-131.13 121.06,-135.65 117.77,-136.7 117.77,-136.7 94.72,-144.1 94.72,-144.1 91.43,-145.16 84.67,-146.21 81.22,-146.21 81.22,-146.21 47.34,-146.21 47.34,-146.21 43.88,-146.21 37.13,-145.16 33.84,-144.1 33.84,-144.1 10.79,-136.7 10.79,-136.7 7.5,-135.65 4.21,-131.13 4.21,-127.67 4.21,-127.67 4.21,-120.76 4.21,-120.76 4.21,-117.3 7.5,-112.78 10.79,-111.72 10.79,-111.72 33.84,-104.33 33.84,-104.33 37.13,-103.27 43.88,-102.21 47.34,-102.21 47.34,-102.21 81.22,-102.21 81.22,-102.21 84.67,-102.21 91.43,-103.27 94.72,-104.33 94.72,-104.33 117.77,-111.72 117.77,-111.72 121.06,-112.78 124.35,-117.3 124.35,-120.76"/>
-<path fill="none" stroke="black" d="M128.34,-119.78C128.34,-119.78 128.34,-128.65 128.34,-128.65 128.34,-133.08 124.12,-138.87 119.9,-140.22 119.9,-140.22 97.2,-147.51 97.2,-147.51 92.98,-148.86 84.32,-150.21 79.89,-150.21 79.89,-150.21 48.67,-150.21 48.67,-150.21 44.24,-150.21 35.58,-148.86 31.36,-147.51 31.36,-147.51 8.66,-140.22 8.66,-140.22 4.44,-138.87 0.22,-133.08 0.22,-128.65 0.22,-128.65 0.22,-119.78 0.22,-119.78 0.22,-115.35 4.44,-109.56 8.66,-108.21 8.66,-108.21 31.36,-100.92 31.36,-100.92 35.58,-99.57 44.24,-98.21 48.67,-98.21 48.67,-98.21 79.89,-98.21 79.89,-98.21 84.32,-98.21 92.98,-99.57 97.2,-100.92 97.2,-100.92 119.9,-108.21 119.9,-108.21 124.12,-109.56 128.34,-115.35 128.34,-119.78"/>
-<text text-anchor="middle" x="64.28" y="-120.51" font-family="Times,serif" font-size="14.00" fill="white">Kneiphof</text>
-</g>
-<!-- North&#45;&#45;Center -->
-<g id="edge5" class="edge">
-<title>North&#45;&#45;Center</title>
-<path fill="none" stroke="black" stroke-width="3" d="M102.61,-182.29C97.54,-171.79 91.4,-160.33 85.48,-150.38"/>
-</g>
-<!-- South -->
-<g id="node2" class="node">
-<title>South</title>
-<path fill="#6e8b3d" stroke="black" d="M185.09,-29.55C185.09,-29.55 185.09,-36.45 185.09,-36.45 185.09,-39.9 181.83,-44.49 178.57,-45.62 178.57,-45.62 149.43,-55.74 149.43,-55.74 146.17,-56.87 139.46,-58 136.01,-58 136.01,-58 90.17,-58 90.17,-58 86.72,-58 80,-56.87 76.74,-55.74 76.74,-55.74 47.61,-45.62 47.61,-45.62 44.35,-44.49 41.09,-39.9 41.09,-36.45 41.09,-36.45 41.09,-29.55 41.09,-29.55 41.09,-26.1 44.35,-21.51 47.61,-20.38 47.61,-20.38 76.74,-10.26 76.74,-10.26 80,-9.13 86.72,-8 90.17,-8 90.17,-8 136.01,-8 136.01,-8 139.46,-8 146.17,-9.13 149.43,-10.26 149.43,-10.26 178.57,-20.38 178.57,-20.38 181.83,-21.51 185.09,-26.1 185.09,-29.55"/>
-<path fill="none" stroke="black" d="M189.09,-28.6C189.09,-28.6 189.09,-37.4 189.09,-37.4 189.09,-41.8 184.93,-47.64 180.78,-49.09 180.78,-49.09 151.9,-59.11 151.9,-59.11 147.74,-60.56 139.19,-62 134.79,-62 134.79,-62 91.39,-62 91.39,-62 86.99,-62 78.43,-60.56 74.28,-59.11 74.28,-59.11 45.4,-49.09 45.4,-49.09 41.25,-47.64 37.09,-41.8 37.09,-37.4 37.09,-37.4 37.09,-28.6 37.09,-28.6 37.09,-24.2 41.25,-18.36 45.4,-16.91 45.4,-16.91 74.28,-6.89 74.28,-6.89 78.43,-5.44 86.99,-4 91.39,-4 91.39,-4 134.79,-4 134.79,-4 139.19,-4 147.74,-5.44 151.9,-6.89 151.9,-6.89 180.78,-16.91 180.78,-16.91 184.93,-18.36 189.09,-24.2 189.09,-28.6"/>
-<path fill="none" stroke="black" d="M193.09,-27.65C193.09,-27.65 193.09,-38.35 193.09,-38.35 193.09,-43.7 188.04,-50.8 182.98,-52.55 182.98,-52.55 154.37,-62.49 154.37,-62.49 149.31,-64.25 138.91,-66 133.56,-66 133.56,-66 92.61,-66 92.61,-66 87.26,-66 76.86,-64.25 71.81,-62.49 71.81,-62.49 43.19,-52.55 43.19,-52.55 38.14,-50.8 33.09,-43.7 33.09,-38.35 33.09,-38.35 33.09,-27.65 33.09,-27.65 33.09,-22.3 38.14,-15.2 43.19,-13.45 43.19,-13.45 71.81,-3.51 71.81,-3.51 76.86,-1.75 87.26,0 92.61,0 92.61,0 133.56,0 133.56,0 138.91,0 149.31,-1.75 154.37,-3.51 154.37,-3.51 182.98,-13.45 182.98,-13.45 188.04,-15.2 193.09,-22.3 193.09,-27.65"/>
-<text text-anchor="middle" x="113.09" y="-29.3" font-family="Times,serif" font-size="14.00" fill="white">Vorstadt</text>
-</g>
-<!-- South&#45;&#45;Center -->
-<g id="edge2" class="edge">
-<title>South&#45;&#45;Center</title>
-<path fill="none" stroke="black" stroke-width="3" d="M87.82,-66.19C81.87,-76.68 76,-88.12 71.5,-98.05"/>
-</g>
-<!-- Center&#45;&#45;North -->
-<g id="edge3" class="edge">
-<title>Center&#45;&#45;North</title>
-<path fill="none" stroke="black" stroke-width="3" d="M71.57,-150.53C76.08,-160.48 81.96,-171.91 87.9,-182.39"/>
-</g>
-<!-- Center&#45;&#45;South -->
-<g id="edge6" class="edge">
-<title>Center&#45;&#45;South</title>
-<path fill="none" stroke="black" stroke-width="3" d="M85.59,-97.85C91.45,-87.99 97.53,-76.67 102.54,-66.27"/>
-</g>
-<!-- East -->
-<g id="node4" class="node">
-<title>East</title>
-<path fill="#6e8b3d" stroke="black" d="M198.41,-119.23C198.41,-119.23 198.41,-129.19 198.41,-129.19 198.41,-134.16 194.9,-142.64 191.39,-146.15 191.39,-146.15 184.36,-153.19 184.36,-153.19 180.85,-156.7 172.37,-160.21 167.41,-160.21 167.41,-160.21 157.48,-160.21 157.48,-160.21 152.51,-160.21 144.03,-156.7 140.53,-153.19 140.53,-153.19 133.5,-146.15 133.5,-146.15 129.99,-142.64 126.48,-134.16 126.48,-129.19 126.48,-129.19 126.48,-119.23 126.48,-119.23 126.48,-114.27 129.99,-105.79 133.5,-102.28 133.5,-102.28 140.53,-95.24 140.53,-95.24 144.03,-91.73 152.51,-88.21 157.48,-88.21 157.48,-88.21 167.41,-88.21 167.41,-88.21 172.37,-88.21 180.85,-91.73 184.36,-95.24 184.36,-95.24 191.39,-102.28 191.39,-102.28 194.9,-105.79 198.41,-114.27 198.41,-119.23"/>
-<path fill="none" stroke="black" d="M202.4,-118.68C202.4,-118.68 202.4,-129.75 202.4,-129.75 202.4,-135.26 198.5,-144.69 194.6,-148.59 194.6,-148.59 186.79,-156.41 186.79,-156.41 182.89,-160.31 173.48,-164.21 167.96,-164.21 167.96,-164.21 156.92,-164.21 156.92,-164.21 151.41,-164.21 141.99,-160.31 138.09,-156.41 138.09,-156.41 130.28,-148.59 130.28,-148.59 126.38,-144.69 122.48,-135.26 122.48,-129.75 122.48,-129.75 122.48,-118.68 122.48,-118.68 122.48,-113.16 126.38,-103.74 130.28,-99.84 130.28,-99.84 138.09,-92.02 138.09,-92.02 141.99,-88.12 151.41,-84.21 156.92,-84.21 156.92,-84.21 167.96,-84.21 167.96,-84.21 173.48,-84.21 182.89,-88.12 186.79,-92.02 186.79,-92.02 194.6,-99.84 194.6,-99.84 198.5,-103.74 202.4,-113.16 202.4,-118.68"/>
-<path fill="none" stroke="black" d="M206.4,-117.99C206.4,-117.99 206.4,-130.44 206.4,-130.44 206.4,-136.44 202.16,-146.68 197.92,-150.93 197.92,-150.93 189.13,-159.73 189.13,-159.73 184.89,-163.97 174.65,-168.21 168.65,-168.21 168.65,-168.21 156.23,-168.21 156.23,-168.21 150.23,-168.21 139.99,-163.97 135.75,-159.73 135.75,-159.73 126.96,-150.93 126.96,-150.93 122.72,-146.68 118.48,-136.44 118.48,-130.44 118.48,-130.44 118.48,-117.99 118.48,-117.99 118.48,-111.99 122.72,-101.75 126.96,-97.5 126.96,-97.5 135.75,-88.7 135.75,-88.7 139.99,-84.46 150.23,-80.21 156.23,-80.21 156.23,-80.21 168.65,-80.21 168.65,-80.21 174.65,-80.21 184.89,-84.46 189.13,-88.7 189.13,-88.7 197.92,-97.5 197.92,-97.5 202.16,-101.75 206.4,-111.99 206.4,-117.99"/>
-<text text-anchor="middle" x="162.44" y="-120.51" font-family="Times,serif" font-size="14.00" fill="white">Lomse</text>
-</g>
-<!-- Center&#45;&#45;East -->
-<g id="edge7" class="edge">
-<title>Center&#45;&#45;East</title>
-<path fill="none" stroke="black" stroke-width="3" d="M128.38,-124.21C128.53,-124.21 128.68,-124.21 128.82,-124.21"/>
-</g>
-<!-- East&#45;&#45;North -->
-<g id="edge4" class="edge">
-<title>East&#45;&#45;North</title>
-<path fill="none" stroke="black" stroke-width="3" d="M140.51,-164.75C137.32,-170.65 134.06,-176.67 130.96,-182.4"/>
-</g>
-<!-- East&#45;&#45;South -->
-<g id="edge1" class="edge">
-<title>East&#45;&#45;South</title>
-<path fill="none" stroke="black" stroke-width="3" d="M140.51,-83.68C137.32,-77.78 134.06,-71.76 130.96,-66.03"/>
-</g>
-</g>
-</svg>
-<h3 id="Clusters"><a class="docs-heading-anchor" href="#Clusters">Clusters</a><a id="Clusters-1"></a><a class="docs-heading-anchor-permalink" href="#Clusters" title="Permalink"></a></h3><ul><li>How to use <code>subgraph</code></li></ul><pre><code class="language-julia hljs">using GraphvizDotLang: digraph, edge, node, attr, subgraph
+    edge(&quot;Center&quot;, &quot;East&quot;)</code></pre><img src="index-3f136bca.png" alt="Example block output" width="292" height="342"/><h3 id="Clusters"><a class="docs-heading-anchor" href="#Clusters">Clusters</a><a id="Clusters-1"></a><a class="docs-heading-anchor-permalink" href="#Clusters" title="Permalink"></a></h3><ul><li>How to use <code>subgraph</code></li></ul><pre><code class="language-julia hljs">using GraphvizDotLang: digraph, edge, node, attr, subgraph
 
 g = digraph(&quot;G&quot;)
 cluster0 = subgraph(g, &quot;cluster_0&quot;; label=&quot;process #1&quot;, style=&quot;filled&quot;, color=&quot;lightgray&quot;) |&gt;
@@ -228,176 +149,7 @@ g |&gt;
     edge(&quot;a3&quot;, &quot;end&quot;) |&gt;
     edge(&quot;b3&quot;, &quot;end&quot;) |&gt;
     node(&quot;start&quot;; shape=&quot;Mdiamond&quot;) |&gt;
-    node(&quot;end&quot;; shape=&quot;Msquare&quot;)</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
- -->
-<!-- Title: G Pages: 1 -->
-<svg width="228pt" height="414pt"
- viewBox="0.00 0.00 228.00 414.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 410)">
-<title>G</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-410 224,-410 224,4 -4,4"/>
-<g id="clust1" class="cluster">
-<title>cluster_0</title>
-<polygon fill="lightgray" stroke="lightgray" points="8,-71 8,-362 105,-362 105,-71 8,-71"/>
-<text text-anchor="middle" x="56.5" y="-346.8" font-family="Times,serif" font-size="14.00">process #1</text>
-</g>
-<g id="clust2" class="cluster">
-<title>cluster_1</title>
-<polygon fill="none" stroke="blue" points="115,-71 115,-362 212,-362 212,-71 115,-71"/>
-<text text-anchor="middle" x="163.5" y="-346.8" font-family="Times,serif" font-size="14.00">process #2</text>
-</g>
-<!-- a0 -->
-<g id="node1" class="node">
-<title>a0</title>
-<ellipse fill="white" stroke="white" cx="68" cy="-313" rx="27" ry="18"/>
-<text text-anchor="middle" x="68" y="-309.3" font-family="Times,serif" font-size="14.00">a0</text>
-</g>
-<!-- a1 -->
-<g id="node2" class="node">
-<title>a1</title>
-<ellipse fill="white" stroke="white" cx="68" cy="-241" rx="27" ry="18"/>
-<text text-anchor="middle" x="68" y="-237.3" font-family="Times,serif" font-size="14.00">a1</text>
-</g>
-<!-- a0&#45;&gt;a1 -->
-<g id="edge1" class="edge">
-<title>a0&#45;&gt;a1</title>
-<path fill="none" stroke="black" d="M68,-294.7C68,-286.98 68,-277.71 68,-269.11"/>
-<polygon fill="black" stroke="black" points="71.5,-269.1 68,-259.1 64.5,-269.1 71.5,-269.1"/>
-</g>
-<!-- a2 -->
-<g id="node3" class="node">
-<title>a2</title>
-<ellipse fill="white" stroke="white" cx="67" cy="-169" rx="27" ry="18"/>
-<text text-anchor="middle" x="67" y="-165.3" font-family="Times,serif" font-size="14.00">a2</text>
-</g>
-<!-- a1&#45;&gt;a2 -->
-<g id="edge2" class="edge">
-<title>a1&#45;&gt;a2</title>
-<path fill="none" stroke="black" d="M67.75,-222.7C67.64,-214.98 67.51,-205.71 67.39,-197.11"/>
-<polygon fill="black" stroke="black" points="70.89,-197.05 67.24,-187.1 63.89,-197.15 70.89,-197.05"/>
-</g>
-<!-- b3 -->
-<g id="node8" class="node">
-<title>b3</title>
-<ellipse fill="lightgrey" stroke="black" cx="150" cy="-97" rx="27" ry="18"/>
-<text text-anchor="middle" x="150" y="-93.3" font-family="Times,serif" font-size="14.00">b3</text>
-</g>
-<!-- a1&#45;&gt;b3 -->
-<g id="edge9" class="edge">
-<title>a1&#45;&gt;b3</title>
-<path fill="none" stroke="black" d="M78.82,-224.49C85.96,-214.05 95.36,-199.9 103,-187 115.4,-166.07 128.21,-141.58 137.32,-123.6"/>
-<polygon fill="black" stroke="black" points="140.61,-124.85 141.98,-114.34 134.36,-121.7 140.61,-124.85"/>
-</g>
-<!-- a3 -->
-<g id="node4" class="node">
-<title>a3</title>
-<ellipse fill="white" stroke="white" cx="68" cy="-97" rx="27" ry="18"/>
-<text text-anchor="middle" x="68" y="-93.3" font-family="Times,serif" font-size="14.00">a3</text>
-</g>
-<!-- a2&#45;&gt;a3 -->
-<g id="edge3" class="edge">
-<title>a2&#45;&gt;a3</title>
-<path fill="none" stroke="black" d="M67.25,-150.7C67.36,-142.98 67.49,-133.71 67.61,-125.11"/>
-<polygon fill="black" stroke="black" points="71.11,-125.15 67.76,-115.1 64.11,-125.05 71.11,-125.15"/>
-</g>
-<!-- a3&#45;&gt;a0 -->
-<g id="edge11" class="edge">
-<title>a3&#45;&gt;a0</title>
-<path fill="none" stroke="black" d="M53.87,-112.86C45.44,-122.81 35.51,-136.66 31,-151 16.6,-196.79 17.57,-213.22 32,-259 35.36,-269.66 41.63,-280.12 48.01,-288.89"/>
-<polygon fill="black" stroke="black" points="45.43,-291.28 54.32,-297.05 50.97,-287 45.43,-291.28"/>
-</g>
-<!-- end -->
-<g id="node10" class="node">
-<title>end</title>
-<polygon fill="none" stroke="black" points="130.5,-43 87.5,-43 87.5,0 130.5,0 130.5,-43"/>
-<polyline fill="none" stroke="black" points="99.5,-43 87.5,-31 "/>
-<polyline fill="none" stroke="black" points="87.5,-12 99.5,0 "/>
-<polyline fill="none" stroke="black" points="118.5,0 130.5,-12 "/>
-<polyline fill="none" stroke="black" points="130.5,-31 118.5,-43 "/>
-<text text-anchor="middle" x="109" y="-17.8" font-family="Times,serif" font-size="14.00">end</text>
-</g>
-<!-- a3&#45;&gt;end -->
-<g id="edge12" class="edge">
-<title>a3&#45;&gt;end</title>
-<path fill="none" stroke="black" d="M77.1,-79.69C81.64,-71.55 87.28,-61.44 92.54,-52.01"/>
-<polygon fill="black" stroke="black" points="95.61,-53.68 97.43,-43.25 89.5,-50.27 95.61,-53.68"/>
-</g>
-<!-- b0 -->
-<g id="node5" class="node">
-<title>b0</title>
-<ellipse fill="lightgrey" stroke="black" cx="150" cy="-313" rx="27" ry="18"/>
-<text text-anchor="middle" x="150" y="-309.3" font-family="Times,serif" font-size="14.00">b0</text>
-</g>
-<!-- b1 -->
-<g id="node6" class="node">
-<title>b1</title>
-<ellipse fill="lightgrey" stroke="black" cx="163" cy="-241" rx="27" ry="18"/>
-<text text-anchor="middle" x="163" y="-237.3" font-family="Times,serif" font-size="14.00">b1</text>
-</g>
-<!-- b0&#45;&gt;b1 -->
-<g id="edge4" class="edge">
-<title>b0&#45;&gt;b1</title>
-<path fill="none" stroke="black" d="M153.15,-295.05C154.58,-287.35 156.31,-278.03 157.92,-269.36"/>
-<polygon fill="black" stroke="black" points="161.41,-269.75 159.79,-259.28 154.52,-268.47 161.41,-269.75"/>
-</g>
-<!-- b2 -->
-<g id="node7" class="node">
-<title>b2</title>
-<ellipse fill="lightgrey" stroke="black" cx="177" cy="-169" rx="27" ry="18"/>
-<text text-anchor="middle" x="177" y="-165.3" font-family="Times,serif" font-size="14.00">b2</text>
-</g>
-<!-- b1&#45;&gt;b2 -->
-<g id="edge5" class="edge">
-<title>b1&#45;&gt;b2</title>
-<path fill="none" stroke="black" d="M166.39,-223.05C167.93,-215.35 169.79,-206.03 171.53,-197.36"/>
-<polygon fill="black" stroke="black" points="175.02,-197.77 173.54,-187.28 168.15,-196.39 175.02,-197.77"/>
-</g>
-<!-- b2&#45;&gt;a3 -->
-<g id="edge10" class="edge">
-<title>b2&#45;&gt;a3</title>
-<path fill="none" stroke="black" d="M158.01,-155.81C140.66,-144.67 114.81,-128.06 95.26,-115.5"/>
-<polygon fill="black" stroke="black" points="97.07,-112.51 86.77,-110.05 93.29,-118.4 97.07,-112.51"/>
-</g>
-<!-- b2&#45;&gt;b3 -->
-<g id="edge6" class="edge">
-<title>b2&#45;&gt;b3</title>
-<path fill="none" stroke="black" d="M170.6,-151.41C167.49,-143.34 163.67,-133.43 160.17,-124.35"/>
-<polygon fill="black" stroke="black" points="163.4,-123.03 156.54,-114.96 156.87,-125.55 163.4,-123.03"/>
-</g>
-<!-- b3&#45;&gt;end -->
-<g id="edge13" class="edge">
-<title>b3&#45;&gt;end</title>
-<path fill="none" stroke="black" d="M140.9,-79.69C136.36,-71.55 130.72,-61.44 125.46,-52.01"/>
-<polygon fill="black" stroke="black" points="128.5,-50.27 120.57,-43.25 122.39,-53.68 128.5,-50.27"/>
-</g>
-<!-- start -->
-<g id="node9" class="node">
-<title>start</title>
-<polygon fill="none" stroke="black" points="109,-406 62.25,-388 109,-370 155.75,-388 109,-406"/>
-<polyline fill="none" stroke="black" points="73.44,-392.31 73.44,-383.69 "/>
-<polyline fill="none" stroke="black" points="97.8,-374.31 120.2,-374.31 "/>
-<polyline fill="none" stroke="black" points="144.56,-383.69 144.56,-392.31 "/>
-<polyline fill="none" stroke="black" points="120.2,-401.69 97.8,-401.69 "/>
-<text text-anchor="middle" x="109" y="-384.3" font-family="Times,serif" font-size="14.00">start</text>
-</g>
-<!-- start&#45;&gt;a0 -->
-<g id="edge7" class="edge">
-<title>start&#45;&gt;a0</title>
-<path fill="none" stroke="black" d="M101.09,-372.92C95.71,-363.34 88.44,-350.4 82.09,-339.08"/>
-<polygon fill="black" stroke="black" points="84.97,-337.07 77.02,-330.07 78.87,-340.5 84.97,-337.07"/>
-</g>
-<!-- start&#45;&gt;b0 -->
-<g id="edge8" class="edge">
-<title>start&#45;&gt;b0</title>
-<path fill="none" stroke="black" d="M116.91,-372.92C122.29,-363.34 129.56,-350.4 135.91,-339.08"/>
-<polygon fill="black" stroke="black" points="139.13,-340.5 140.98,-330.07 133.03,-337.07 139.13,-340.5"/>
-</g>
-</g>
-</svg>
-<h3 id="Circle-of-Fifths"><a class="docs-heading-anchor" href="#Circle-of-Fifths">Circle of Fifths</a><a id="Circle-of-Fifths-1"></a><a class="docs-heading-anchor-permalink" href="#Circle-of-Fifths" title="Permalink"></a></h3><ul><li>Shows <code>record</code> nodes with <code>HTML</code> labels</li></ul><pre><code class="language- hljs">using GraphvizDotLang: digraph, edge, node, attr, HTML
+    node(&quot;end&quot;; shape=&quot;Msquare&quot;)</code></pre><img src="index-2eb73bd0.png" alt="Example block output" width="303" height="554"/><h3 id="Circle-of-Fifths"><a class="docs-heading-anchor" href="#Circle-of-Fifths">Circle of Fifths</a><a id="Circle-of-Fifths-1"></a><a class="docs-heading-anchor-permalink" href="#Circle-of-Fifths" title="Permalink"></a></h3><ul><li>Shows <code>record</code> nodes with <code>HTML</code> labels</li></ul><pre><code class="language-julia hljs">using GraphvizDotLang: digraph, edge, node, attr, HTML
 using Printf: @sprintf
 
 a_freq = 440.0
@@ -420,7 +172,7 @@ for (i, n) in enumerate(note_names)
         node(n; label=HTML(@sprintf &quot;&lt;b&gt;%s&lt;/b&gt; | %4.1fHz&quot; n et_freq)) |&gt;
         edge(n, note_names[(i + 6) % 12 + 1])
 end
-g</code></pre><h3 id="Twelve-colors"><a class="docs-heading-anchor" href="#Twelve-colors">Twelve colors</a><a id="Twelve-colors-1"></a><a class="docs-heading-anchor-permalink" href="#Twelve-colors" title="Permalink"></a></h3><ul><li>using node fill colors</li><li>using <code>neato</code> layout</li></ul><pre><code class="language-julia hljs"># After an example by Costa Shulyupin
+g</code></pre><img src="index-0e917314.png" alt="Example block output" width="615" height="617"/><h3 id="Twelve-colors"><a class="docs-heading-anchor" href="#Twelve-colors">Twelve colors</a><a id="Twelve-colors-1"></a><a class="docs-heading-anchor-permalink" href="#Twelve-colors" title="Permalink"></a></h3><ul><li>using node fill colors</li><li>using <code>neato</code> layout</li></ul><pre><code class="language-julia hljs"># After an example by Costa Shulyupin
 using GraphvizDotLang: digraph, edge, node, save, attr
 
 colors = Dict(
@@ -449,240 +201,23 @@ for (c, others) in colors
         g |&gt; edge(c, o)
     end
 end
-g</code></pre><?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
- "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Generated by graphviz version 2.50.0 (20211204.2007)
- -->
-<!-- Title: Twelve_colors Pages: 1 -->
-<svg width="574pt" height="643pt"
- viewBox="0.00 0.00 573.61 642.78" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 638.78)">
-<title>Twelve_colors</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-638.78 569.61,-638.78 569.61,4 -4,4"/>
-<!-- white -->
-<g id="node1" class="node">
-<title>white</title>
-<ellipse fill="white" stroke="black" cx="284.28" cy="-317.75" rx="54" ry="54"/>
-<text text-anchor="middle" x="284.28" y="-314.05" font-family="Times,serif" font-size="14.00">white</text>
-</g>
-<!-- springgreen -->
-<g id="node2" class="node">
-<title>springgreen</title>
-<ellipse fill="springgreen" stroke="black" cx="54.79" cy="-446.3" rx="54" ry="54"/>
-<text text-anchor="middle" x="54.79" y="-442.6" font-family="Times,serif" font-size="14.00">springgreen</text>
-</g>
-<!-- green -->
-<g id="node3" class="node">
-<title>green</title>
-<ellipse fill="green" stroke="black" cx="130.53" cy="-317.75" rx="54" ry="54"/>
-<text text-anchor="middle" x="130.53" y="-314.05" font-family="Times,serif" font-size="14.00">green</text>
-</g>
-<!-- green&#45;&gt;white -->
-<g id="edge3" class="edge">
-<title>green&#45;&gt;white</title>
-<path fill="none" stroke="black" d="M184.74,-317.75C196.1,-317.75 208.2,-317.75 219.9,-317.75"/>
-<polygon fill="black" stroke="black" points="220.04,-321.25 230.04,-317.75 220.04,-314.25 220.04,-321.25"/>
-</g>
-<!-- green&#45;&gt;springgreen -->
-<g id="edge5" class="edge">
-<title>green&#45;&gt;springgreen</title>
-<path fill="none" stroke="black" d="M102.97,-364.52C97.96,-373.03 92.68,-381.98 87.54,-390.71"/>
-<polygon fill="black" stroke="black" points="84.51,-388.95 82.45,-399.34 90.54,-392.51 84.51,-388.95"/>
-</g>
-<!-- yellowgreen -->
-<g id="node4" class="node">
-<title>yellowgreen</title>
-<ellipse fill="yellowgreen" stroke="black" cx="54" cy="-189.47" rx="54" ry="54"/>
-<text text-anchor="middle" x="54" y="-185.77" font-family="Times,serif" font-size="14.00">yellowgreen</text>
-</g>
-<!-- green&#45;&gt;yellowgreen -->
-<g id="edge1" class="edge">
-<title>green&#45;&gt;yellowgreen</title>
-<path fill="none" stroke="black" d="M102.68,-271.08C97.56,-262.48 92.16,-253.43 86.9,-244.61"/>
-<polygon fill="black" stroke="black" points="89.83,-242.69 81.7,-235.9 83.81,-246.28 89.83,-242.69"/>
-</g>
-<!-- yellow -->
-<g id="node5" class="node">
-<title>yellow</title>
-<ellipse fill="yellow" stroke="black" cx="196.05" cy="-165.18" rx="54" ry="54"/>
-<text text-anchor="middle" x="196.05" y="-161.48" font-family="Times,serif" font-size="14.00">yellow</text>
-</g>
-<!-- green&#45;&gt;yellow -->
-<g id="edge2" class="edge">
-<title>green&#45;&gt;yellow</title>
-<path fill="none" stroke="black" d="M151.98,-267.79C157.95,-253.89 164.49,-238.66 170.67,-224.29"/>
-<polygon fill="black" stroke="black" points="173.93,-225.56 174.66,-214.99 167.5,-222.8 173.93,-225.56"/>
-</g>
-<!-- cyan -->
-<g id="node6" class="node">
-<title>cyan</title>
-<ellipse fill="cyan" stroke="black" cx="197.22" cy="-469.86" rx="54" ry="54"/>
-<text text-anchor="middle" x="197.22" y="-466.16" font-family="Times,serif" font-size="14.00">cyan</text>
-</g>
-<!-- green&#45;&gt;cyan -->
-<g id="edge4" class="edge">
-<title>green&#45;&gt;cyan</title>
-<path fill="none" stroke="black" d="M152.37,-367.56C158.44,-381.42 165.1,-396.6 171.39,-410.93"/>
-<polygon fill="black" stroke="black" points="168.23,-412.45 175.45,-420.2 174.64,-409.64 168.23,-412.45"/>
-</g>
-<!-- yellow&#45;&gt;yellowgreen -->
-<g id="edge6" class="edge">
-<title>yellow&#45;&gt;yellowgreen</title>
-<path fill="none" stroke="black" d="M142.75,-174.29C134.58,-175.69 126.07,-177.14 117.7,-178.58"/>
-<polygon fill="black" stroke="black" points="116.86,-175.17 107.6,-180.3 118.04,-182.07 116.86,-175.17"/>
-</g>
-<!-- orange -->
-<g id="node7" class="node">
-<title>orange</title>
-<ellipse fill="orange" stroke="black" cx="288.12" cy="-54" rx="54" ry="54"/>
-<text text-anchor="middle" x="288.12" y="-50.3" font-family="Times,serif" font-size="14.00">orange</text>
-</g>
-<!-- yellow&#45;&gt;orange -->
-<g id="edge7" class="edge">
-<title>yellow&#45;&gt;orange</title>
-<path fill="none" stroke="black" d="M230.6,-123.46C235.83,-117.14 241.28,-110.56 246.65,-104.08"/>
-<polygon fill="black" stroke="black" points="249.7,-105.88 253.38,-95.95 244.31,-101.42 249.7,-105.88"/>
-</g>
-<!-- cyan&#45;&gt;springgreen -->
-<g id="edge8" class="edge">
-<title>cyan&#45;&gt;springgreen</title>
-<path fill="none" stroke="black" d="M143.78,-461.02C135.59,-459.66 127.06,-458.25 118.67,-456.87"/>
-<polygon fill="black" stroke="black" points="118.97,-453.37 108.53,-455.19 117.82,-460.27 118.97,-453.37"/>
-</g>
-<!-- deepskyblue -->
-<g id="node9" class="node">
-<title>deepskyblue</title>
-<ellipse fill="deepskyblue" stroke="black" cx="289.83" cy="-580.53" rx="54.49" ry="54.49"/>
-<text text-anchor="middle" x="289.83" y="-576.83" font-family="Times,serif" font-size="14.00">deepskyblue</text>
-</g>
-<!-- cyan&#45;&gt;deepskyblue -->
-<g id="edge9" class="edge">
-<title>cyan&#45;&gt;deepskyblue</title>
-<path fill="none" stroke="black" d="M231.97,-511.39C237.24,-517.68 242.72,-524.23 248.12,-530.69"/>
-<polygon fill="black" stroke="black" points="245.79,-533.35 254.89,-538.78 251.15,-528.86 245.79,-533.35"/>
-</g>
-<!-- deeppink -->
-<g id="node8" class="node">
-<title>deeppink</title>
-<ellipse fill="deeppink" stroke="black" cx="509.79" cy="-180.57" rx="54" ry="54"/>
-<text text-anchor="middle" x="509.79" y="-176.87" font-family="Times,serif" font-size="14.00" fill="white">deeppink</text>
-</g>
-<!-- purple -->
-<g id="node10" class="node">
-<title>purple</title>
-<ellipse fill="purple" stroke="black" cx="511.61" cy="-451.35" rx="54" ry="54"/>
-<text text-anchor="middle" x="511.61" y="-447.65" font-family="Times,serif" font-size="14.00" fill="white">purple</text>
-</g>
-<!-- blue -->
-<g id="node11" class="node">
-<title>blue</title>
-<ellipse fill="blue" stroke="black" cx="362.27" cy="-450.14" rx="54" ry="54"/>
-<text text-anchor="middle" x="362.27" y="-446.44" font-family="Times,serif" font-size="14.00" fill="white">blue</text>
-</g>
-<!-- blue&#45;&gt;white -->
-<g id="edge12" class="edge">
-<title>blue&#45;&gt;white</title>
-<path fill="none" stroke="black" d="M334.77,-403.46C329,-393.67 322.87,-383.26 316.94,-373.19"/>
-<polygon fill="black" stroke="black" points="319.88,-371.29 311.79,-364.45 313.85,-374.84 319.88,-371.29"/>
-</g>
-<!-- blue&#45;&gt;cyan -->
-<g id="edge11" class="edge">
-<title>blue&#45;&gt;cyan</title>
-<path fill="none" stroke="black" d="M308.22,-456.6C293.19,-458.39 276.71,-460.36 261.16,-462.22"/>
-<polygon fill="black" stroke="black" points="260.62,-458.76 251.1,-463.42 261.45,-465.71 260.62,-458.76"/>
-</g>
-<!-- blue&#45;&gt;deepskyblue -->
-<g id="edge10" class="edge">
-<title>blue&#45;&gt;deepskyblue</title>
-<path fill="none" stroke="black" d="M335.91,-497.58C331.12,-506.21 326.07,-515.29 321.15,-524.15"/>
-<polygon fill="black" stroke="black" points="318.08,-522.46 316.29,-532.9 324.2,-525.86 318.08,-522.46"/>
-</g>
-<!-- blue&#45;&gt;purple -->
-<g id="edge14" class="edge">
-<title>blue&#45;&gt;purple</title>
-<path fill="none" stroke="black" d="M416.6,-450.58C426.61,-450.66 437.15,-450.75 447.41,-450.83"/>
-<polygon fill="black" stroke="black" points="447.53,-454.33 457.56,-450.91 447.59,-447.33 447.53,-454.33"/>
-</g>
-<!-- magenta -->
-<g id="node12" class="node">
-<title>magenta</title>
-<ellipse fill="magenta" stroke="black" cx="460.82" cy="-316.44" rx="54" ry="54"/>
-<text text-anchor="middle" x="460.82" y="-312.74" font-family="Times,serif" font-size="14.00" fill="white">magenta</text>
-</g>
-<!-- blue&#45;&gt;magenta -->
-<g id="edge13" class="edge">
-<title>blue&#45;&gt;magenta</title>
-<path fill="none" stroke="black" d="M394.54,-406.36C403.47,-394.24 413.25,-380.97 422.5,-368.43"/>
-<polygon fill="black" stroke="black" points="425.36,-370.44 428.48,-360.31 419.73,-366.29 425.36,-370.44"/>
-</g>
-<!-- magenta&#45;&gt;deeppink -->
-<g id="edge16" class="edge">
-<title>magenta&#45;&gt;deeppink</title>
-<path fill="none" stroke="black" d="M479.19,-265.46C482.08,-257.45 485.09,-249.11 488.04,-240.91"/>
-<polygon fill="black" stroke="black" points="491.38,-241.98 491.48,-231.38 484.79,-239.61 491.38,-241.98"/>
-</g>
-<!-- magenta&#45;&gt;purple -->
-<g id="edge15" class="edge">
-<title>magenta&#45;&gt;purple</title>
-<path fill="none" stroke="black" d="M479.88,-367.06C482.8,-374.82 485.84,-382.9 488.83,-390.85"/>
-<polygon fill="black" stroke="black" points="485.65,-392.32 492.44,-400.45 492.2,-389.86 485.65,-392.32"/>
-</g>
-<!-- red -->
-<g id="node13" class="node">
-<title>red</title>
-<ellipse fill="red" stroke="black" cx="360.75" cy="-184.25" rx="54" ry="54"/>
-<text text-anchor="middle" x="360.75" y="-180.55" font-family="Times,serif" font-size="14.00" fill="white">red</text>
-</g>
-<!-- red&#45;&gt;white -->
-<g id="edge19" class="edge">
-<title>red&#45;&gt;white</title>
-<path fill="none" stroke="black" d="M333.79,-231.32C328.13,-241.19 322.12,-251.69 316.3,-261.85"/>
-<polygon fill="black" stroke="black" points="313.19,-260.24 311.25,-270.66 319.26,-263.72 313.19,-260.24"/>
-</g>
-<!-- red&#45;&gt;yellow -->
-<g id="edge18" class="edge">
-<title>red&#45;&gt;yellow</title>
-<path fill="none" stroke="black" d="M306.82,-178.01C291.81,-176.27 275.37,-174.36 259.85,-172.57"/>
-<polygon fill="black" stroke="black" points="260.15,-169.08 249.82,-171.4 259.35,-176.03 260.15,-169.08"/>
-</g>
-<!-- red&#45;&gt;orange -->
-<g id="edge17" class="edge">
-<title>red&#45;&gt;orange</title>
-<path fill="none" stroke="black" d="M334.32,-136.86C329.52,-128.24 324.46,-119.17 319.53,-110.32"/>
-<polygon fill="black" stroke="black" points="322.58,-108.6 314.65,-101.57 316.46,-112.01 322.58,-108.6"/>
-</g>
-<!-- red&#45;&gt;deeppink -->
-<g id="edge21" class="edge">
-<title>red&#45;&gt;deeppink</title>
-<path fill="none" stroke="black" d="M414.98,-182.91C424.9,-182.67 435.35,-182.41 445.53,-182.16"/>
-<polygon fill="black" stroke="black" points="445.69,-185.66 455.6,-181.91 445.52,-178.66 445.69,-185.66"/>
-</g>
-<!-- red&#45;&gt;magenta -->
-<g id="edge20" class="edge">
-<title>red&#45;&gt;magenta</title>
-<path fill="none" stroke="black" d="M393.51,-227.53C402.59,-239.52 412.52,-252.64 421.91,-265.04"/>
-<polygon fill="black" stroke="black" points="419.15,-267.2 427.98,-273.06 424.73,-262.97 419.15,-267.2"/>
-</g>
-</g>
-</svg>
-<h2 id="API"><a class="docs-heading-anchor" href="#API">API</a><a id="API-1"></a><a class="docs-heading-anchor-permalink" href="#API" title="Permalink"></a></h2><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.graph" href="#GraphvizDotLang.graph"><code>GraphvizDotLang.graph</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">graph(name = nothing; kwargs ...)</code></pre><p>Create a <code>Graph</code> object for undirected graphs. Each of the keyword arguments is added as a graph attribute.</p><pre><code class="language-julia-repl hljs">julia&gt; graph(&quot;hello&quot;; fontname=&quot;sans serif&quot;, bgcolor=&quot;#fff0e0&quot;) |&gt;
+g</code></pre><img src="index-da7b1bb4.png" alt="Example block output" width="765" height="857"/><h2 id="API"><a class="docs-heading-anchor" href="#API">API</a><a id="API-1"></a><a class="docs-heading-anchor-permalink" href="#API" title="Permalink"></a></h2><article><details class="docstring" open="true"><summary id="GraphvizDotLang.graph"><a class="docstring-binding" href="#GraphvizDotLang.graph"><code>GraphvizDotLang.graph</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">graph(name = nothing; kwargs ...)</code></pre><p>Create a <code>Graph</code> object for undirected graphs. Each of the keyword arguments is added as a graph attribute.</p><pre><code class="language-julia-repl hljs">julia&gt; graph(&quot;hello&quot;; fontname=&quot;sans serif&quot;, bgcolor=&quot;#fff0e0&quot;) |&gt;
        edge(&quot;a&quot;, &quot;b&quot;)
 graph &quot;hello&quot; {
   graph[bgcolor=&quot;#fff0e0&quot;;fontname=&quot;sans serif&quot;;];
   &quot;a&quot;--&quot;b&quot;;
-}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L167-L181">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.digraph" href="#GraphvizDotLang.digraph"><code>GraphvizDotLang.digraph</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">digraph(name = nothing; kwargs ...)</code></pre><p>Create a <code>Graph</code> object for directed graphs.</p><pre><code class="language-julia-repl hljs">julia&gt; digraph() |&gt;
+}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L170-L184">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.digraph"><a class="docstring-binding" href="#GraphvizDotLang.digraph"><code>GraphvizDotLang.digraph</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">digraph(name = nothing; kwargs ...)</code></pre><p>Create a <code>Graph</code> object for directed graphs.</p><pre><code class="language-julia-repl hljs">julia&gt; digraph() |&gt;
        edge(&quot;a&quot;, &quot;b&quot;)
 digraph {
   &quot;a&quot;-&gt;&quot;b&quot;;
-}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L186-L198">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.subgraph" href="#GraphvizDotLang.subgraph"><code>GraphvizDotLang.subgraph</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">subgraph(parent::Union{Graph,Subgraph}, name=nothing; kwargs...)</code></pre><p>Create new subgraph. Returns the subgraph.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L272-L276">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.node" href="#GraphvizDotLang.node"><code>GraphvizDotLang.node</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">node(id::AbstractString, port::Union{AbstractString,Nothing}=nothing; kwargs...)</code></pre><p>Add node to a graph.</p><pre><code class="language-julia-repl hljs">julia&gt; graph() |&gt; node(&quot;Node&quot;; fillcolor=&quot;red&quot;, fontcolor=&quot;white&quot;)
+}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L189-L201">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.subgraph"><a class="docstring-binding" href="#GraphvizDotLang.subgraph"><code>GraphvizDotLang.subgraph</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">subgraph(parent::Union{Graph,Subgraph}, name=nothing; kwargs...)</code></pre><p>Create new subgraph. Returns the subgraph.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L275-L279">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.node"><a class="docstring-binding" href="#GraphvizDotLang.node"><code>GraphvizDotLang.node</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">node(id::AbstractString, port::Union{AbstractString,Nothing}=nothing; kwargs...)</code></pre><p>Add node to a graph.</p><pre><code class="language-julia-repl hljs">julia&gt; graph() |&gt; node(&quot;Node&quot;; fillcolor=&quot;red&quot;, fontcolor=&quot;white&quot;)
 graph {
   &quot;Node&quot;[fillcolor=&quot;red&quot;;fontcolor=&quot;white&quot;;];
-}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L216-L227">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.edge" href="#GraphvizDotLang.edge"><code>GraphvizDotLang.edge</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">edge(from::AbstractString, to::AbstractString ...; kwargs ...)</code></pre><p>Add an edge to a graph.</p><pre><code class="language-julia-repl hljs">julia&gt; graph() |&gt; edge(&quot;a&quot;, &quot;b&quot;; label=&quot;connect!&quot;)
+}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L219-L230">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.edge"><a class="docstring-binding" href="#GraphvizDotLang.edge"><code>GraphvizDotLang.edge</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">edge(from::AbstractString, to::AbstractString ...; kwargs ...)</code></pre><p>Add an edge to a graph.</p><pre><code class="language-julia-repl hljs">julia&gt; graph() |&gt; edge(&quot;a&quot;, &quot;b&quot;; label=&quot;connect!&quot;)
 graph {
   &quot;a&quot;--&quot;b&quot;[label=&quot;connect!&quot;;];
 }
 julia&gt; digraph() |&gt; edge(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;; label=&quot;direct!&quot;)
 digraph {
   &quot;a&quot;-&gt;&quot;b&quot;-&gt;&quot;c&quot;[label=&quot;direct!&quot;;];
-}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L232-L247">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.attr" href="#GraphvizDotLang.attr"><code>GraphvizDotLang.attr</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">attr(symb::Symbol; attrs...)</code></pre><p>Add attributes to the graph. The <code>symb</code> argument must be one of <code>[:graph, :node, :edge]</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L261-L266">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.HTML" href="#GraphvizDotLang.HTML"><code>GraphvizDotLang.HTML</code></a> — <span class="docstring-category">Type</span></header><section><div><pre><code class="language-julia hljs">HTML(html::AbstractString)</code></pre><p>Any HTMLish label should be wrapped into a HTML struct, so that we know to change the quotation marks from double quotes to angled brackets.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L33-L38">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="GraphvizDotLang.save" href="#GraphvizDotLang.save"><code>GraphvizDotLang.save</code></a> — <span class="docstring-category">Function</span></header><section><div><pre><code class="language-julia hljs">save(g::Graph, filename::AbstractString; engine=&quot;dot&quot;, format=&quot;svg&quot;)</code></pre><p>Run the <code>dot</code> command to save the graph to file. Creates the containing directory if it doesn&#39;t already exist.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/982d82d47640ba1a0d2a75a8c39d9a8240f316cd/src/GraphvizDotLang.jl#L283-L288">source</a></section></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Monday 9 November 2026 09:04">Monday 9 November 2026</span>. Using Julia version 1.10.13.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+}</code></pre></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L235-L250">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.attr"><a class="docstring-binding" href="#GraphvizDotLang.attr"><code>GraphvizDotLang.attr</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">attr(symb::Symbol; attrs...)</code></pre><p>Add attributes to the graph. The <code>symb</code> argument must be one of <code>[:graph, :node, :edge]</code>.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L264-L269">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.HTML"><a class="docstring-binding" href="#GraphvizDotLang.HTML"><code>GraphvizDotLang.HTML</code></a> — <span class="docstring-category">Type</span></summary><section><div><pre><code class="language-julia hljs">HTML(html::AbstractString)</code></pre><p>Any HTMLish label should be wrapped into a HTML struct, so that we know to change the quotation marks from double quotes to angled brackets.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L33-L38">source</a></section></details></article><article><details class="docstring" open="true"><summary id="GraphvizDotLang.save"><a class="docstring-binding" href="#GraphvizDotLang.save"><code>GraphvizDotLang.save</code></a> — <span class="docstring-category">Function</span></summary><section><div><pre><code class="language-julia hljs">save(g::Graph, filename::AbstractString; engine=&quot;dot&quot;, format=&quot;svg&quot;)</code></pre><p>Run the <code>dot</code> command to save the graph to file. Creates the containing directory if it doesn&#39;t already exist.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/jhidding/GraphvizDotLang.jl/blob/005775698f5be3e52ec2110d613f4f767d2374f7/src/GraphvizDotLang.jl#L286-L291">source</a></section></details></article></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.20.0 on <span class="colophon-date" title="Monday 9 November 2026 12:58">Monday 9 November 2026</span>. Using Julia version 1.10.13.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
