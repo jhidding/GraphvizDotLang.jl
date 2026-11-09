@@ -47,12 +47,15 @@ end
 
 AList(x::IdDict{Symbol,String}) = AList(convert(IdDict{Symbol, Union{String,HTML}}, x))
 
+to_string_or_html(x::AbstractString) = String(x)
+to_string_or_html(x::HTML) = x
+
 function AList(kwargs::Base.Pairs)
-    kwargs = NamedTuple((p[1]=>String(p[2]) for p in pairs(kwargs)))
+    kwargs = NamedTuple((p[1]=>to_string_or_html(p[2]) for p in pairs(kwargs)))
     AList(IdDict(pairs(kwargs)))
 end
 
-function Base.show(io :: IO, alst :: AList)
+function Base.show(io::IO, alst::AList)
     for (k, v) in pairs(alst.content)
         value_repr = v isa HTML ? "<$(v.html)>" : "\"$v\""
         print(io, "$k=$value_repr;")
